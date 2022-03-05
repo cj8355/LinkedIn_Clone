@@ -2,7 +2,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/compat/storage';
-import env from "react-dotenv";
+/*import env from "react-dotenv";*/
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_KEY,

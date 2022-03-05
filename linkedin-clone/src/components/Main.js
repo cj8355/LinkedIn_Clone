@@ -9,15 +9,38 @@ import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import CommentRoundedIcon from '@mui/icons-material/CommentRounded';
 import SendIcon from '@mui/icons-material/Send';
 import ShareIcon from '@mui/icons-material/Share';
+import PostModal from "./PostModal";
+import { useState } from "react";
 
 
 const Main = (props) => {
+    const [showModal, setShowModal] = useState("close");
+
+    const handleClick = (e) => {
+        e.preventDefault();
+        if (e.target !== e.currentTarget) {
+            return;
+        }
+
+        switch (showModal) {
+            case "open":
+                setShowModal("close");
+                break;
+            case "close":
+                setShowModal("open");
+                break;
+                default:
+                    setShowModal("close");
+                    break;
+        }
+    };
+
     return (
         <Container>
             <ShareBox>Share
             <div>
                 <img src="/images/user.svg"></img>
-                <button>Start a post</button>
+                <button onClick={handleClick}>Start a post</button>
             </div>
 
             <div>
@@ -98,6 +121,7 @@ const Main = (props) => {
                     </SocialActions>
                 </Article>
             </div>
+            <PostModal showModal={showModal} handleClick={handleClick} />
         </Container>
     )
 };
