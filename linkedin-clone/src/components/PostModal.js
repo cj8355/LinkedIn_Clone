@@ -5,7 +5,11 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import CommentRoundedIcon from '@mui/icons-material/CommentRounded';
 import { useState } from "react";
 import ReactPlayer from "react-player";
-import {connect} from "react-redux"
+import {connect} from "react-redux";
+/*import firebase from "firebase";*/
+import firebase from 'firebase/compat/app';
+import { postArticleAPI } from "../actions";
+
 
 const PostModal = (props) => {
     const [editorText, setEditorText] = useState("");
@@ -27,6 +31,24 @@ const PostModal = (props) => {
         setShareImage("");
         setVideoLink("");
         setAssetArea(area);
+    };
+
+    const postArticle = (e) => {
+        e.preventDefault();
+        if (e.target !== e.currentTarget) {
+            return;
+        }
+
+        const payload = {
+            image: shareImage,
+            video: videoLink,
+            user: props.user,
+            description: editorText,
+            timestamp: firebase.firestore.Timestamp.now(),
+        };
+
+        props.postArticle(payload);
+        reset(e);
     };
 
     const reset = (e) => {
@@ -112,7 +134,7 @@ const PostModal = (props) => {
                     </AssetButton>
                     </ShareComment>
 
-                    <PostButton disabled={!editorText ? true : false}>
+                    <PostButton disabled={!editorText ? true : false} onClick={(event) => postArticle(event)}>
                         Post
                     </PostButton>
                 </SharedCreation>
@@ -283,7 +305,10 @@ const mapStateToProps = (state) => {
     }
 };
 
-const mapDispatchToProps = (dispatch) => ({});
+const mapDispatchToProps = (dispatch) => ({
+
+    postArticle: (payload) => dispatch(postArticleAPI(payload)),
+});
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostModal);
