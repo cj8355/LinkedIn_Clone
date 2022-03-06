@@ -10,11 +10,18 @@ import CommentRoundedIcon from '@mui/icons-material/CommentRounded';
 import SendIcon from '@mui/icons-material/Send';
 import ShareIcon from '@mui/icons-material/Share';
 import PostModal from "./PostModal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import {connect} from "react-redux";
+import CircularProgress from '@mui/material/CircularProgress';
+import { getArticlesAPI } from "../actions";
 
 
 const Main = (props) => {
     const [showModal, setShowModal] = useState("close");
+
+    useEffect(() => {
+        props.getArticles();
+    }, []);
 
     const handleClick = (e) => {
         e.preventDefault();
@@ -37,10 +44,16 @@ const Main = (props) => {
 
     return (
         <Container>
-            <ShareBox>Share
+            <ShareBox>
             <div>
-                <img src="/images/user.svg"></img>
-                <button onClick={handleClick}>Start a post</button>
+                { props.user && props.user.photoURL ? (
+                    <img src={props.user.photoURL}></img>
+                ) : (
+                    <img src="/images/user.svg"></img>
+
+                )}
+                
+                <button onClick={handleClick} disabled={props.loading ? true : false}>Start a post</button>
             </div>
 
             <div>
@@ -65,8 +78,13 @@ const Main = (props) => {
                 </button>
             </div>
             </ShareBox>
+            <Content>
+                {
+                    props.loading && <CircularProgress />
+                }
+            
 
-            <div>
+            
                 <Article>
                     <SharedActor>
                         <a>
@@ -120,7 +138,7 @@ const Main = (props) => {
                     </button>
                     </SocialActions>
                 </Article>
-            </div>
+                </Content>
             <PostModal showModal={showModal} handleClick={handleClick} />
         </Container>
     )
@@ -348,6 +366,24 @@ const SocialActions = styled.div`
     }
 `;
 
+const Content = styled.div`
+    text-align: center;
+    & > img {
+        width: 30px;
+    }
+`;
+
+const mapStateToProps = (state) => {
+    return {
+        loading: state.articleState.loading,
+        user: state.userState.user,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+    getArticles: () => dispatch(getArticlesAPI()),
+});
 
 
-export default Main;
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
