@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import {connect} from "react-redux";
 import CircularProgress from '@mui/material/CircularProgress';
 import { getArticlesAPI } from "../actions";
+import ReactPlayer from "react-player";
 
 
 const Main = (props) => {
@@ -42,10 +43,21 @@ const Main = (props) => {
         }
     };
 
+    console.log(props);
+    
+
     return (
+        <>
+        {
+            
+            props.articles.length === 0 ? (
+            <p>No articles</p>
+           ) : (
         <Container>
             <ShareBox>
+                
             <div>
+                
                 { props.user && props.user.photoURL ? (
                     <img src={props.user.photoURL}></img>
                 ) : (
@@ -83,26 +95,33 @@ const Main = (props) => {
                     props.loading && <CircularProgress />
                 }
             
-
+                {props.articles.length > 0 && 
+                props.articles.map((article, key) => (
             
-                <Article>
+                <Article key={key}>
                     <SharedActor>
                         <a>
-                        <img src="/images/user.svg"></img>
+                        <img src={article.actor.image}></img>
                         <div>
-                            <span>Title</span>
-                            <span>Info</span>
-                            <span>Date</span>
+                            <span>{article.actor.title}</span>
+                            <span>{article.actor.description}</span>
+                            <span>{article.actor.date.toDate().toLocaleDateString()}</span>
                         </div>
                         </a>
                         <button>
                             <MoreHorizIcon className="icon"/>
                         </button>
                     </SharedActor>
-                    <Description>Desc</Description>
+                    <Description>{article.description}</Description>
                     <SharedImg>
                         <a>
-                            <img src="/images/beach.jfif"></img>
+                            {
+                                !article.sharedImg && article.video ?
+                                <ReactPlayer width={"100%"} url={article.video} />
+                             : (
+                                article.sharedImg && <img src={article.sharedImg} />
+                              ) }
+                            
                         </a>
                     </SharedImg>
                     <SocialCounts>
@@ -138,9 +157,12 @@ const Main = (props) => {
                     </button>
                     </SocialActions>
                 </Article>
+                ))}
                 </Content>
             <PostModal showModal={showModal} handleClick={handleClick} />
         </Container>
+        )}
+        </>
     )
 };
 
@@ -377,6 +399,7 @@ const mapStateToProps = (state) => {
     return {
         loading: state.articleState.loading,
         user: state.userState.user,
+        articles: state.articleState.articles,
     };
 };
 
