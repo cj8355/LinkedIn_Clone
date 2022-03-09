@@ -65,7 +65,7 @@ const Main = (props) => {
 
                 )}
                 
-                <button onClick={handleClick} disabled={props.loading ? true : false}>Start a post</button>
+                <button onClick={handleClick} className="post" disabled={props.loading ? true : false}>Start a post</button>
             </div>
 
             <div>
@@ -127,14 +127,14 @@ const Main = (props) => {
                     <SocialCounts>
                         <li>
                             <button>
-                                <RecommendSharpIcon />
+                                <RecommendSharpIcon className="likeButton"/>
                                 <img src="https://static-exp1.licdn.com/sc/h/5thsbmikm6a8uov24ygwd914f"></img>
                                 <span>75</span>
                             </button>
                         </li>
                         <li>
                             <a>
-                                3 comments
+                               {article.comments} comments
                             </a>
                         </li>
                     </SocialCounts>
@@ -201,6 +201,13 @@ const ShareBox = styled(CommonCard)`
             display: flex;
             align-items: center;
             font-weight: 600;
+            
+        }
+
+        .post {
+            &:hover {
+                cursor: text;
+            }
         }
 
         .icon {
@@ -355,6 +362,7 @@ const SocialCounts =styled.ul`
     padding: 8px 0;
     border-bottom: 1px solid #e9e5df;
     list-style: none;
+    
 
     li {
         margin-right: 5px;
@@ -362,6 +370,15 @@ const SocialCounts =styled.ul`
 
         button {
             display: flex;
+            border: none;
+            background-color: white;
+
+            .likeButton {
+                width: 18px;
+                height: 18px;
+                color: blue;
+            }
+            
         }
     }
 `;
@@ -379,6 +396,8 @@ const SocialActions = styled.div`
         align-items: center;
         padding: 8px;
         color: #0a66c2;
+        border: none;
+        background-color: white;
 
         @media (min-width: 768px) {
             span {
